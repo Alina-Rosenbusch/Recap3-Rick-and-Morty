@@ -1,6 +1,8 @@
-import {createCharacterCard} from "./components/card/card.js";
+import { createCharacterCard } from "./components/card/card.js";
 
-export const cardContainer = document.querySelector('[data-js="card-container"]');
+export const cardContainer = document.querySelector(
+  '[data-js="card-container"]'
+);
 const searchBarContainer = document.querySelector(
   '[data-js="search-bar-container"]'
 );
@@ -15,10 +17,42 @@ const maxPage = 1;
 const page = 1;
 const searchQuery = "";
 
-createCharacterCard("https://rickandmortyapi.com/api/character/avatar/1.jpeg", "Rick", "alive", "-", "51");
+//Manual approach to generate a card
+/*createCharacterCard(
+  "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
+  "Rick",
+  "alive",
+  "-",
+  "51"
+);*/
 
-const imageSrc ="https://rickandmortyapi.com/api/character/avatar/1.jpeg";
-const characterName = "Rick"
-const status = "alive"
-const type = ""
-const occurrences = 51
+fetchCharacters();
+
+async function fetchCharacters() {
+  try {
+    const response = await fetch("https://rickandmortyapi.com/api/character");
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+
+      cardContainer.innerHTML = "";
+
+      data.results.forEach((person) => {
+        createCharacterCard(
+          person.image,
+          person.name,
+          person.status,
+          person.type,
+          person.episode.length
+        );
+      });
+    } else {
+      console.error("Bad Response");
+    }
+  } catch (error) {
+    console.error("An Error occurred");
+  }
+
+  fetch();
+}
